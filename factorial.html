@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Factorial, Sum & Average — CS 1130</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --deep-aqua: #012B34;
+      --aqua-400: #2FC1D9;
+      --aqua-600: #00A8C6;
+      --soft-white: #f2faff;
+      --muted: #89aab3;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Lato', sans-serif;
+      background-color: var(--deep-aqua);
+      color: var(--soft-white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(0,168,198,0.2), transparent 70%),
+        linear-gradient(180deg, #01161c 0%, #013a4a 100%),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><g fill='%23ffffff' fill-opacity='0.05'><circle cx='10' cy='20' r='1'/><circle cx='30' cy='50' r='1.5'/><circle cx='60' cy='10' r='1'/><circle cx='90' cy='70' r='1'/><circle cx='130' cy='20' r='1'/><circle cx='160' cy='90' r='1.2'/><circle cx='180' cy='40' r='0.9'/><circle cx='40' cy='140' r='1'/><circle cx='100' cy='150' r='1.4'/></g></svg>");
+      background-repeat: repeat;
+      background-size: cover, cover, 220px 220px;
+      position: relative;
+    }
+
+    /* Floating bubbles animation */
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      animation: rise 12s infinite ease-in;
+    }
+    @keyframes rise {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to { transform: translateY(-120vh) scale(1.4); opacity: 0; }
+    }
+
+    /* Create multiple random bubbles */
+    .bubble:nth-child(1){ left: 5%; width: 15px; height: 15px; animation-duration: 14s; }
+    .bubble:nth-child(2){ left: 20%; width: 10px; height: 10px; animation-duration: 10s; animation-delay: 2s; }
+    .bubble:nth-child(3){ left: 45%; width: 20px; height: 20px; animation-duration: 16s; animation-delay: 4s; }
+    .bubble:nth-child(4){ left: 70%; width: 25px; height: 25px; animation-duration: 18s; animation-delay: 1s; }
+    .bubble:nth-child(5){ left: 85%; width: 12px; height: 12px; animation-duration: 12s; animation-delay: 3s; }
+
+    .card {
+      width: 90%;
+      max-width: 900px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      z-index: 1;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--aqua-400);
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(47,193,217,0.5);
+    }
+    header h2 {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    h3 {
+      color: var(--aqua-400);
+      margin-top: 30px;
+      font-weight: 700;
+    }
+
+    label {
+      font-weight: 600;
+      color: var(--soft-white);
+    }
+
+    input {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      margin: 6px;
+      width: 180px;
+      text-align: center;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.15);
+      color: var(--soft-white);
+      outline: none;
+    }
+
+    input[readonly] {
+      opacity: 0.8;
+    }
+
+    button {
+      background: linear-gradient(90deg, var(--aqua-400), var(--aqua-600));
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin-top: 8px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,168,198,0.25);
+    }
+
+    .links-container {
+      margin-top: 24px;
+    }
+
+    .links-container a {
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(90deg, var(--aqua-400), var(--aqua-600));
+      box-shadow: 0 6px 18px rgba(0,168,198,0.2);
+      transition: all 0.2s ease;
+    }
+    .links-container a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0,168,198,0.3);
+    }
+
+  </style>
+</head>
+<body>
+  <!-- floating bubbles -->
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+
+  <div class="card">
+    <header>
+      <h1>Factorial, Sum, and Average</h1>
+      <h2>CS 1130 — Introduction to Computing</h2>
+    </header>
+
+    <section>
+      <h3>Factorial (While Loop)</h3>
+      <label>Enter a number:</label>
+      <input id="n1" type="number" placeholder="e.g. 5">
+      <button onclick="computeFactorial()">Compute</button>
+      <br>
+      <label>Factorial:</label>
+      <input id="factorial" type="number" readonly>
+    </section>
+
+    <section>
+      <h3>Sum (Do While Loop)</h3>
+      <label>Enter a number:</label>
+      <input id="n2" type="number" placeholder="e.g. 10">
+      <button onclick="computeSum()">Compute</button>
+      <br>
+      <label>Sum:</label>
+      <input id="sum" type="number" readonly>
+    </section>
+
+    <section>
+      <h3>Average (For Loop)</h3>
+      <label>Enter a number:</label>
+      <input id="n3" type="number" placeholder="e.g. 6">
+      <button onclick="computeAverage()">Compute</button>
+      <br>
+      <label>Average:</label>
+      <input id="average" type="number" readonly>
+    </section>
+
+    <div class="links-container">
+      <a href="index.html">Back to Home</a>
+    </div>
+  </div>
+
+  <script>
+    function computeFactorial(){
+      let i = parseInt(document.getElementById("n1").value);
+      let result = 1;
+      while(i > 1){
+        result *= i;
+        i--;
+      }
+      document.getElementById("factorial").value = result;
+    }
+
+    function computeSum(){
+      let j = parseInt(document.getElementById("n2").value);
+      let result = 0;
+      let a = 1;
+      do {
+        result += a;
+        a++;
+      } while (a <= j);
+      document.getElementById("sum").value = result;
+    }
+
+    function computeAverage(){
+      let k = parseInt(document.getElementById("n3").value);
+      let result = 0;
+      for(let b = 1; b <= k; b++){
+        result += b;
+      }
+      let average = result / k;
+      document.getElementById("average").value = average.toFixed(2);
+    }
+  </script>
+</body>
+</html>
